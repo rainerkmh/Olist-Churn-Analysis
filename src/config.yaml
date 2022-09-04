@@ -1,0 +1,143 @@
+# 'Run', 'Save', 'Load' models configuration for model.py:
+# 'Run' will run all the model(s) listed below and save the results in the folder 'results'
+# 'Save' will save the model(s) to a joblib filed located in the folder 'saved_models'
+# 'Load' will load the model(s) located in the folder saved_models and run them, saving the results in the folder 'saved_models'
+
+# 'Run', 'Save', 'Load' are booleans
+run: 1
+save: 1
+load: 1
+
+# Data Directory
+olist_customers_dataset: '../data/olist_customers_dataset.csv'
+olist_geolocation_dataset: '../data/olist_geolocation_dataset.csv'
+olist_order_items_dataset: '../data/olist_order_items_dataset.csv'
+olist_order_payments_dataset: '../data/olist_order_payments_dataset.csv'
+olist_order_reviews_dataset: '../data/olist_order_reviews_dataset.csv'
+olist_orders_dataset: '../data/olist_orders_dataset.csv'
+olist_products_dataset: '../data/olist_products_dataset.csv'
+olist_sellers_dataset: '../data/olist_sellers_dataset.csv'
+product_category_name_translation: '../data/product_category_name_translation.csv'
+
+# train_test_split
+train_test_split_test_size: 0.4
+train_test_split_random_state: 0
+
+# Sampling method (e.g. oversampling)
+sampling_method_lib: imblearn.over_sampling
+sampling_method_func: ADASYN
+sampling_method_params: {"random_state":42}
+
+# Imputer for Categorical Variables
+cat_imputer_lib: sklearn.impute
+cat_imputer_func: SimpleImputer
+cat_imputer_params: {"strategy":"constant", "fill_value":"missing"}
+
+# Encoder for Categorical Variables
+cat_encoder_lib: category_encoders.cat_boost
+cat_encoder_func: CatBoostEncoder
+cat_encoder_params: {"random_state":42}
+
+# Imputer for Numeric Variables
+num_imputer_lib: sklearn.impute
+num_imputer_func: IterativeImputer
+num_imputer_params: {"max_iter":10, "random_state":42}
+
+# Scaler for Numerical Variables
+num_scaler_lib: sklearn.preprocessing
+num_scaler_func: RobustScaler
+num_scaler_params: {}
+
+# model selection dictionary in the format of {module_name: sklearn classifier function}
+# WARNING: RandomForest and MLP Classifiers take a substantial amount of time to run. 
+
+models: {
+          'xgboost': XGBClassifier,
+          'sklearn.linear_model': LogisticRegression
+        }
+     #     'lightgbm': LGBMClassifier,
+     #     'sklearn.ensemble': RandomForestClassifier
+     #     'sklearn.naive_bayes': GaussianNB,
+     #     'sklearn.neighbors': KNeighborsClassifier,
+     #     'sklearn.ensemble': AdaBoostClassifier,
+     #     'sklearn.neural_network': MLPClassifier
+
+params: {'XGBClassifier':
+             {
+              "classifier__learning_rate" : [0.01,0.05,0.10,0.20,0.30],
+              "classifier__max_depth" : [3,4,5,6,8,10,15],
+              "classifier__min_child_weight" : [1,3,5,7],
+              "classifier__gamma": [0.0,0.1,0.2,0.3,0.4 ],
+              "classifier__colsample_bytree" : [0.3,0.4,0.5,0.7],
+              "classifier__scale_pos_weight": [1,10,19,25,50,75,100,200,300,500,1000],
+              "classifier__random_state":[0]
+             },
+        'LogisticRegression':
+             {
+              'classifier__solver': ['newton-cg', 'lbfgs', 'liblinear'],
+              'classifier__penalty': ['none', 'l1', 'l2', 'elasticnet'],
+              'classifier__class_weight': ['balanced','none']
+             },
+         }
+     #    'MLPClassifier':
+     #         {
+     #          'classifier__hidden_layer_sizes': [(50,50,50), (50,100,50), (100,)],
+     #          'classifier__activation': ['tanh', 'relu'],
+     #          'classifier__solver': ['sgd', 'adam'],
+     #          'classifier__alpha': [0.01,0.05],
+     #          'classifier__learning_rate': ['constant','adaptive'],
+     #          'classifier__max_iter': [200]
+     #         },
+     #    'GaussianNB':{},
+     #    'AdaBoostClassifier':
+     #          {
+     #           'classifier__n_estimators':[10,20,30,50,75,100,200],
+     #           'classifier__learning_rate':[0.1,0.5,1.0,1.5,2.0]
+     #          },
+     #    'KNeighborsClassifier':
+     #          {
+     #           'classifier__n_neighbors':[3,4,5,7,10,15],
+     #           'classifier__weights':['uniform','distance'],
+     #           'classifier__algorithm':['auto','ball_tree','kd_tree','brute'],
+     #           'classifier__p':[1,2],
+     #           'classifier__n_jobs':[-1]
+     #          },
+     #      'LGBMClassifier':
+     #           {
+     #           'classifier__learning_rate':[0.01,0.05,0.10,0.20,0.30],
+     #           'classifier__num_leaves':[20,30,50],
+     #           'classifier__objective':['binary'],
+     #           'classifier__max_depth':[5,6,7,8],
+     #           'classifier__random_state':[42],
+     #           'classifier__class_weight':['balanced']
+     #           },
+     #      'RandomForestClassifier':
+     #           {
+     #           'classifier__bootstrap': [True, False],
+     #           'classifier__max_depth': [10, 30, 50, 70, 100, None],
+     #           'classifier__max_features': ['auto', 'sqrt'],
+     #           'classifier__min_samples_leaf': [1, 2, 4],
+     #           'classifier__min_samples_split': [2, 5, 10],
+     #           'classifier__n_estimators': [100, 200, 500, 1000, 2000]
+     #           }
+
+#scoring (for both CV and model evaluation)
+scoring: ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']
+
+#RandomizedSearchCV parameters
+RandomizedSearchCV_cv: 3
+RandomizedSearchCV_n_iter: 5
+RandomizedSearchCV_scoring: 'roc_auc'
+RandomizedSearchCV_n_jobs: -1
+RandomizedSearchCV_scoring_verbose: 100
+RandomizedSearchCV_return_train_score: True
+RandomizedSearchCV_random_state: 42
+
+#Cross-Validation folds (for comparing models after hyperparameter tuning)
+cv: 5
+
+# Adjust churn day limit
+churn_day_limit: 183
+
+# Save final dataframe (prepared dataset)
+save_df: 0
