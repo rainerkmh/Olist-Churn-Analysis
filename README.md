@@ -63,9 +63,9 @@ load: 0
 2. To load a saved model and avoid running new models, use the configuration below:
 ```
 # 'Run', 'Save', 'Load' are booleans
-run: 1
+run: 0
 save: 1
-load: 0
+load: 1
 ```
 3. Change the file directories of the datasets by modifying the paths below (note: the data folder will be empty in the submitted folder).
 ```
@@ -205,7 +205,7 @@ For choice of models, Logistic Regression and XGBoost were chosen for the machin
 3. XGBoost handles large-sized datasets well and tends to have good execution speed.
 
 ### Why Logistic Regression?
-1. Logistic Regression is straightforward to implement: little hyperparamter tuning is required.
+1. Logistic Regression is straightforward to implement: little hyperparameter tuning is required.
 2. Results derived from Logistic Regression are highly explainable (through model coefficients)
 3. Logistic Regression has been widely used in churn modelling. 
 
